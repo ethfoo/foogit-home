@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD SQL Map Config 3.0//EN"  
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+		<typeAlias type="entity.User" alias="User"/>
+		<typeAlias type="entity.Repository" alias="Repository"/>
+	</typeAliases>
+	
+	
+	<mappers>
+		<mapper resource="mybatis/User.xml"/>
+		<mapper resource="mybatis/Repository.xml"/>
+	</mappers>
+
+	
+</configuration>

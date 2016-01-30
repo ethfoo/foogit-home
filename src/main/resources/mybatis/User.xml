@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.UserMapper">
+	<sql id="userColumns">userName,password,email</sql>
+
+	<resultMap type="entity.User" id="userResultMap">
+		<id column="userId" property="userId"/>
+		<result column="userName" property="userName"/>
+		<result column="password" property="password"/>
+		<result column="email" property="email"/>
+	</resultMap>
+	
+	<select id="getUserByName" parameterType="String" resultMap="userResultMap">
+		select * from user where userName=#{userName};
+	</select>
+	
+	<insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="userId">
+		insert user (<include refid="userColumns"/>) values (#{userName},#{password},#{email})
+	</insert>
+	
+	<select id="getCountByName" parameterType="String" resultType="int">
+		select count(userId) from user where userName=#{userName}
+	</select>
+	
+</mapper>

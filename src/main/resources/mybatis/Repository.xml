@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.RepositoryMapper">
+	<sql id="repoColumns">userId,repoName,repoUrl,isPrivate</sql>
+
+	<resultMap type="entity.Repository" id="repoResultMap">
+		<id column="repoId" property="repoId"/>
+		<result column="userId" property="userId"/>
+		<result column="repoName" property="repoName"/>
+		<result column="repoUrl" property="repoUrl"/>
+		<result column="isPrivate" property="isPrivate"/>
+	</resultMap>
+	
+	
+	
+	<insert id="insertRepository" parameterType="Repository" useGeneratedKeys="true" keyProperty="repoId">
+		insert into repository (<include refid="repoColumns"/>) values (#{userId},#{repoName},#{repoUrl},#{isPrivate})
+	</insert>
+	
+	<select id="listUserRepo" parameterType="int" resultMap="repoResultMap">
+		select * from repository where userId=#{userId}
+	</select>
+	
+	<select id="selectRepoByPath" parameterType="String" resultMap="repoResultMap">
+		select * from repository where repoUrl=#{repoUrl}
+	</select>
+	
+</mapper>
