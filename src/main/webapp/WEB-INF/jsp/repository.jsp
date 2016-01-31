@@ -20,7 +20,7 @@ ${isSessionUserSelf}
 	<h6>branch list:</h6>
 	<ul>
 		<c:forEach items="${branchList}" var="li">
-			<li>${li}</li>
+			<li><a href="<%=pathContext %>${urlMiddle}/tree/${li}">${li}</a></li>
 		</c:forEach>
 	</ul>
 </div>

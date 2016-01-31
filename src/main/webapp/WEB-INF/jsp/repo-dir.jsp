@@ -15,10 +15,10 @@
 	<c:forEach items="${pathItemList}" var="it">
 		<c:choose>
 			<c:when test="${it.file == 'true'}">
-				<div>--is file--><a href="<%=pathContext %>${urlMiddle}/blob/master/${it.path}">${it.name }</a></div>
+				<div>--is file--><a href="<%=pathContext %>${urlMiddle}/blob/${branch }/${it.path}">${it.name }</a></div>
 			</c:when>
 			<c:otherwise>
-				<div>--is path--><a href="<%=pathContext %>${urlMiddle}/tree/master/${it.path}">${it.name }</a></div>
+				<div>--is path--><a href="<%=pathContext %>${urlMiddle}/tree/${branch }/${it.path}">${it.name }</a></div>
 			</c:otherwise>
 		</c:choose>
 	

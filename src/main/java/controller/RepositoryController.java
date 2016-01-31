@@ -61,7 +61,7 @@ public class RepositoryController {
 	
 	@RequestMapping(value="/user/{userName}/{repositoryName}",method=RequestMethod.GET)
 	public String repositoryHome(Map<String,Object> map, HttpSession session, @PathVariable String userName,
-			@PathVariable String repositoryName, RedirectAttributes attr){
+			@PathVariable String repositoryName,  RedirectAttributes attr){
 		//判断是否有此用户，该repo是否存在
 		Repository repo = gitService.getRepoByPath(Const.GIT_REPO_PRE_PATH + userName + "/" + repositoryName);
 		if( repo == null){
@@ -138,6 +138,8 @@ public class RepositoryController {
 		return "repo-blob";
 	}
 	
+
+	
 	@RequestMapping(value="/user/{userName}/{repositoryName}/tree/{branch}/**", method=RequestMethod.GET)
 	public String repositoryDir(Map<String, Object> map, @PathVariable String userName,HttpServletRequest request, 
 			@PathVariable String repositoryName, @PathVariable String branch,
@@ -145,10 +147,18 @@ public class RepositoryController {
 		//TODO 权限控制
 		
 		String requestUri = request.getRequestURI();
-		System.out.println("requestUri-->"+requestUri);
-		String pre = "/foogit/user/"+userName+repositoryName+"/tree"+branch+"/";
-		String path = requestUri.substring(pre.length()+2);
-		System.out.println("filePath-->"+path);
+		//System.out.println("requestUri-->"+requestUri);
+		String pre = "/foogit/user/"+userName+"/"+repositoryName+"/tree/"+branch;
+		String path = requestUri.substring(pre.length());
+		//System.out.println("pre-->"+pre);
+		//System.out.println("path-->"+path);
+		
+		if( path.equals("")){
+			path = "/";
+		}else{
+			path=path.substring(1);
+		}
+		
 		try {
 			System.out.println("path-->"+path);
 			List<PathItem> pathItemList = gitService.getRepoPaths(Const.GIT_REPO_PRE_PATH+userName+"/"+repositoryName+"/.git", branch, path);
@@ -158,7 +168,7 @@ public class RepositoryController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+		map.put("branch", branch);
 		map.put("urlMiddle", "/user/"+userName+"/"+repositoryName);
 		return "repo-dir";
 	}

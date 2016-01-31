@@ -91,7 +91,8 @@ public class GitServiceImple implements GitService {
         RevCommit commit = walk.parseCommit(head.getObjectId());
         RevTree tree = commit.getTree();
         
-        if( !subPath.equals("/")){
+        if( ! (subPath.equals("/")) ){
+        	//System.out.println("!");
         	TreeWalk treeWalk = TreeWalk.forPath(repository, subPath, tree);
         	treeWalk.enterSubtree();
         	while (treeWalk.next()) {
@@ -106,6 +107,7 @@ public class GitServiceImple implements GitService {
         	
         	treeWalk.close();
         }else{
+        	//System.out.println("--");
         	TreeWalk treeWalk = new TreeWalk(repository);
         	treeWalk.addTree(tree);
         	while(treeWalk.next()){
