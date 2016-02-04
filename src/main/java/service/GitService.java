@@ -14,6 +14,7 @@ import entity.Repository;
 public interface GitService {
 
 	boolean createNewRepo(Repository repo);
+	void gitCloneRepo(Repository srcRepo, Repository localRepo) throws Exception;
 	List<Repository> listUserRepo(String userName);
 	Repository getRepoByPath(String path);
 	List<String> getBranchList(String gitBasePath) throws IOException,GitAPIException;

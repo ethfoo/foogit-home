@@ -22,6 +22,7 @@ import entity.User;
 import service.GitService;
 import service.UserService;
 import utils.Const;
+import utils.UtilRepo;
 
 @Controller
 //@RequestMapping("/user/{userName}/{repositoryName}")
@@ -39,8 +40,8 @@ public class RepositoryController {
 			@RequestParam String isPrivate,	HttpSession session, Repository repo, RedirectAttributes attr){
 
 		//不重名，则创建新repository	
-		String path = Const.GIT_REPO_PRE_PATH + userName + "/" + repositoryName;
-		repo.setRepoUrl(path);
+		String subUrl =  userName + "/" + repositoryName;
+		repo.setRepoUrl(subUrl);
 		User user = (User)session.getAttribute(Const.SESSION_USER);
 		repo.setUserId(user.getUserId());
 		repo.setRepoName(repositoryName);
@@ -56,14 +57,14 @@ public class RepositoryController {
 			return "redirect:/error";
 		}
 		
-		return "repository";
+		return "redirect:/user/{userName}/{repositoryName}";
 	}
 	
 	@RequestMapping(value="/user/{userName}/{repositoryName}",method=RequestMethod.GET)
 	public String repositoryHome(Map<String,Object> map, HttpSession session, @PathVariable String userName,
 			@PathVariable String repositoryName,  RedirectAttributes attr){
 		//判断是否有此用户，该repo是否存在
-		Repository repo = gitService.getRepoByPath(Const.GIT_REPO_PRE_PATH + userName + "/" + repositoryName);
+		Repository repo = gitService.getRepoByPath(userName + "/" + repositoryName);
 		if( repo == null){
 			attr.addFlashAttribute(Const.ERROR_MSG, "没有此用户或者该repository不存在");
 			return "redirect:/error";
@@ -82,7 +83,7 @@ public class RepositoryController {
 		
 		
 		try {
-			List<String> branchList = gitService.getBranchList(repo.getRepoUrl()+"/.git");
+			List<String> branchList = gitService.getBranchList(UtilRepo.getFullGitPath(repo.getRepoUrl()));
 			map.put("branchList", branchList);
 		} catch (IOException | GitAPIException e1) {
 			e1.printStackTrace();
@@ -91,7 +92,7 @@ public class RepositoryController {
 		
 		//显示path或file
 		try {
-			List<PathItem> pathItemList = gitService.getRepoPaths(repo.getRepoUrl()+"/.git", "master", "/");
+			List<PathItem> pathItemList = gitService.getRepoPaths(UtilRepo.getFullGitPath(repo.getRepoUrl()), "master", "/");
 			if( pathItemList == null){
 				map.put(Const.IS_REPO_EMPTY, "true");
 			}else{
@@ -172,4 +173,28 @@ public class RepositoryController {
 		map.put("urlMiddle", "/user/"+userName+"/"+repositoryName);
 		return "repo-dir";
 	}
+	
+	@RequestMapping(value="/user/{userName}/{repositoryName}/fork")
+	public String fork(HttpSession session, @PathVariable(value="userName") String srcUserName, 
+			@PathVariable String repositoryName){
+		
+		Repository srcRepo = gitService.getRepoByPath(srcUserName + "/" + repositoryName);
+		
+		User user = (User)session.getAttribute(Const.SESSION_USER);
+		
+		Repository localRepo = new Repository();
+		localRepo.setRepoName(repositoryName);
+		localRepo.setRepoUrl(user.getUserName()+"/"+repositoryName);
+		localRepo.setUserId(user.getUserId());
+		try {
+			gitService.gitCloneRepo(srcRepo, localRepo);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		
+		return "redirect:/user/"+user.getUserName()+"/{repositoryName}";
+	}
+	
 }

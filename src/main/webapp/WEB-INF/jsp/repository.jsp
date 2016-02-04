@@ -14,7 +14,34 @@
 repository home
 
 
-${isSessionUserSelf}
+<div>isSessionUserSelf: ${isSessionUserSelf}</div>
+
+<div>
+	<ul>
+		<li>watch</li>
+		<li>star</li>
+		<li>
+			<c:choose>
+				<c:when test="${isSessionUserSelf}">
+					<button disabled="disabled">fork</button>
+				</c:when>
+				<c:otherwise>
+					<a href="<%=pathContext %>${urlMiddle}/fork" ><button>fork</button></a>
+				</c:otherwise>
+			</c:choose>
+		</li>
+	</ul>
+</div>
+
+<div>
+	<ul>
+		<li>code</li>
+		<li>issues</li>
+		<li>pull requests</li>
+		<li>settings</li>
+	</ul>
+</div>
+
 
 <div>
 	<h6>branch list:</h6>

@@ -18,6 +18,8 @@ import mapper.UserMapper;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.InvalidRemoteException;
+import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectLoader;
@@ -34,6 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import entity.PathItem;
 import entity.User;
 import utils.Const;
+import utils.UtilRepo;
 
 public class GitServiceImple implements GitService {
 	
@@ -44,10 +47,10 @@ public class GitServiceImple implements GitService {
 	private UserMapper userMapper;
 
 	public boolean createNewRepo(entity.Repository repo) {
-		String path = repo.getRepoUrl();
+		
 		//创建git文件
 		try {
-			File f = new File(path +"/.git");
+			File f = new File(UtilRepo.getFullGitPath(repo.getRepoUrl()));
 			Repository newlyCreatedRepo = FileRepositoryBuilder.create(f);
 			newlyCreatedRepo.create();
 			
@@ -59,6 +62,24 @@ public class GitServiceImple implements GitService {
 		//插入数据库Repository
 		repoMapper.insertRepository(repo);
 		return true;
+	}
+	
+	@Override
+	public void gitCloneRepo(entity.Repository srcRepo, entity.Repository localRepo) throws Exception{
+		String srcPath = UtilRepo.getFullGitPath(srcRepo.getRepoUrl());
+		File local = new File(Const.GIT_REPO_PRE_PATH + localRepo.getRepoUrl());
+		
+		 Git result = Git.cloneRepository()
+	                .setURI(srcPath)
+	                .setDirectory(local)
+	                .call();
+		        // Note: the call() returns an opened repository already which needs to be closed to avoid file handle leaks!
+		       // System.out.println("Having repository: " + result.getRepository().getDirectory());
+	     result.close();
+		
+	     
+	     repoMapper.insertRepository(localRepo);
+	     
 	}
 
 	public List listUserRepo(String userName) {
@@ -184,6 +205,8 @@ public class GitServiceImple implements GitService {
 		
 		return branchList;
 	}
+
+
 
 	
 
