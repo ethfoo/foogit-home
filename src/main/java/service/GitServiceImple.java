@@ -194,11 +194,11 @@ public class GitServiceImple implements GitService {
 
 	
 	@Override
-	public List<String> getBranchList(String gitBasePath) throws IOException, GitAPIException {
+	public List<String> getBranchList(String gitfullPath) throws IOException, GitAPIException {
 		List<String> branchList = new ArrayList<>();
 		
 		Repository repository = new FileRepositoryBuilder()
-	    .setGitDir(new File(gitBasePath))
+	    .setGitDir(new File(gitfullPath))
 	    .build();	
 		
 		  try (Git git = new Git(repository)) {
@@ -212,6 +212,13 @@ public class GitServiceImple implements GitService {
 		  }
 		
 		return branchList;
+	}
+
+	@Override
+	public String getUpstream(String downstream) {
+		String upstream = forksMapper.getUpstreamByDownstream(downstream);
+		
+		return upstream;
 	}
 
 

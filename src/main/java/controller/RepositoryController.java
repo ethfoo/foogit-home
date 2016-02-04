@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -197,6 +198,36 @@ public class RepositoryController {
 		
 		
 		return "redirect:/user/"+user.getUserName()+"/{repositoryName}";
+	}
+	
+	@RequestMapping(value="/user/{userName}/{repositoryName}/compare")
+	public String compare(Map<String, Object> map, @PathVariable String userName, @PathVariable String repositoryName){
+		
+		String downstream = userName + "/" + repositoryName;
+		String upstream = gitService.getUpstream(downstream);
+		
+		List<String> downstreamBranches = null;
+		List<String> upstreamBranches = null;
+		try {
+			downstreamBranches = gitService.getBranchList(UtilRepo.getFullGitPath(downstream));
+			upstreamBranches = gitService.getBranchList(UtilRepo.getFullGitPath(upstream));
+		} catch (IOException | GitAPIException e) {
+			e.printStackTrace();
+		}
+		
+		List<String> upAndDown = new ArrayList<>();
+		if( upstream != null){
+			upAndDown.add(downstream);
+			upAndDown.add(upstream);
+			map.put("upstreamBranches", upstreamBranches);
+		}else{
+			upAndDown.add(downstream);
+		}
+		map.put("upAndDown", upAndDown);
+		map.put("downstreamBranches", downstreamBranches);
+
+		
+		return "repo-compare";
 	}
 	
 }

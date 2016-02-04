@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.ForksMapper">
+	<sql id="forksColumns">forkId, upstream, downstream</sql>
+
+	<resultMap type="entity.Forks" id="forksResultMap">
+		<id column="forkId" property="forkId"/>
+		<result column="upstream" property="upstream"/>
+		<result column="downstream" property="downstream"/>
+		
+	</resultMap>
+	
+	
+	<select id="getUpstreamByDownstream" parameterType="String" resultType="String">
+		select upstream from forks where downstream=#{downstream}	
+	</select>
+	
+	<select id="selectForksByUpstream" parameterType="String" resultMap="forksResultMap">
+		select * from forks where upstream=#{upstream}
+	</select>
+	
+	<insert id="insertForks" parameterType="Forks" useGeneratedKeys="true" keyProperty="forkId">
+		insert forks (<include refid="forksColumns"/>) values (#{forkId},#{upstream},#{downstream})
+	</insert>
+	
+
+	
+</mapper>

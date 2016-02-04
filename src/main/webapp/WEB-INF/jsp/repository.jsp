@@ -42,6 +42,9 @@ repository home
 	</ul>
 </div>
 
+<div>
+	<a href="<%=pathContext %>${urlMiddle}/compare"><button>new pull request</button></a>
+</div>
 
 <div>
 	<h6>branch list:</h6>

@@ -17,8 +17,9 @@ public interface GitService {
 	void gitCloneRepo(Repository srcRepo, Repository localRepo) throws Exception;
 	List<Repository> listUserRepo(String userName);
 	Repository getRepoByPath(String path);
-	List<String> getBranchList(String gitBasePath) throws IOException,GitAPIException;
+	List<String> getBranchList(String gitfullPath) throws IOException,GitAPIException;
 	List<PathItem> getRepoPaths(String gitBasePath, String branch, String subPath) throws IOException ;
 	List<String> getSrcCode(String path, String branch, String subPath) throws IOException;
 	
+	String getUpstream(String downstream);
 }
