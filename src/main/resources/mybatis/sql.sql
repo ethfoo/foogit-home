@@ -19,3 +19,9 @@ CREATE TABLE `user` (
   PRIMARY KEY (`userId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 
 
+create table forks(
+    -> forkId int(11) not null auto_increment,
+    -> upstream varchar(50) not null,
+    -> downstream varchar(50) not null,
+    -> primary key (forkId)
+    -> )ENGINE=InnoDB default charset=utf8;

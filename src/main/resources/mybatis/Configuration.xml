@@ -5,12 +5,14 @@
 	<typeAliases>
 		<typeAlias type="entity.User" alias="User"/>
 		<typeAlias type="entity.Repository" alias="Repository"/>
+		<typeAlias type="entity.Forks" alias="Forks"/>
 	</typeAliases>
 	
 	
 	<mappers>
 		<mapper resource="mybatis/User.xml"/>
 		<mapper resource="mybatis/Repository.xml"/>
+		<mapper resource="mybatis/Forks.xml"/>
 	</mappers>
 
 	

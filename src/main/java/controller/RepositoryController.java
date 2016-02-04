@@ -176,7 +176,7 @@ public class RepositoryController {
 	
 	@RequestMapping(value="/user/{userName}/{repositoryName}/fork")
 	public String fork(HttpSession session, @PathVariable(value="userName") String srcUserName, 
-			@PathVariable String repositoryName){
+			@PathVariable String repositoryName, RedirectAttributes attr){
 		
 		Repository srcRepo = gitService.getRepoByPath(srcUserName + "/" + repositoryName);
 		
@@ -190,6 +190,8 @@ public class RepositoryController {
 			gitService.gitCloneRepo(srcRepo, localRepo);
 		} catch (Exception e) {
 			e.printStackTrace();
+			attr.addFlashAttribute(Const.ERROR_MSG, "已经fork");
+			return "redirect:/error";
 		}
 		
 		

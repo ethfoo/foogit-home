@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import mapper.ForksMapper;
 import mapper.RepositoryMapper;
 import mapper.UserMapper;
 
@@ -33,6 +34,7 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import entity.Forks;
 import entity.PathItem;
 import entity.User;
 import utils.Const;
@@ -41,10 +43,12 @@ import utils.UtilRepo;
 public class GitServiceImple implements GitService {
 	
 	@Autowired
-	private RepositoryMapper repoMapper;
-	
+	private RepositoryMapper repoMapper;	
 	@Autowired
 	private UserMapper userMapper;
+	@Autowired
+	private ForksMapper forksMapper;
+	
 
 	public boolean createNewRepo(entity.Repository repo) {
 		
@@ -79,6 +83,10 @@ public class GitServiceImple implements GitService {
 		
 	     
 	     repoMapper.insertRepository(localRepo);
+	     Forks forks = new Forks();
+	     forks.setUpstream(srcRepo.getRepoUrl());
+	     forks.setDownstream(localRepo.getRepoUrl());
+	     forksMapper.insertForks(forks);
 	     
 	}
 
